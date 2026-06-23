@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Glunixy — Listing Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
-:root{color-scheme:light;--bg:#f6f7fb;--card:#fff;--line:#e6e8f0;--txt:#1c2333;--muted:#6b7488;--accent:#6d4aff;--accent2:#9b6bff;--green:#16a34a;--amber:#d97706}
+:root{color-scheme:light;--bg:#f6f7fb;--card:#fff;--line:#e6e8f0;--txt:#1c2333;--muted:#6b7488;--accent:#6d4aff;--accent2:#9b6bff;--green:#16a34a;--red:#dc2626;--amber:#d97706}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--txt);padding:24px;line-height:1.45}
 .wrap{max-width:1280px;margin:0 auto}
@@ -11,14 +12,24 @@ h1{font-size:23px;font-weight:800;display:flex;align-items:center;gap:10px}
 .logo{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800}
 .sub{color:var(--muted);font-size:13px;margin:6px 0 20px}
 .badge{background:#efeaff;color:var(--accent);font-size:12px;padding:5px 11px;border-radius:20px;font-weight:600}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px}
+h2{font-size:15px;font-weight:700;margin:26px 0 14px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:0 1px 2px rgba(20,30,60,.04)}
 .kpi .label{color:var(--muted);font-size:12.5px;margin-bottom:8px}
-.kpi .val{font-size:26px;font-weight:800}
-.kpi .val.sm{font-size:18px}
-.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
+.kpi .val{font-size:24px;font-weight:800}
+.kpi .val.sm{font-size:17px}
+.kpi .val.na{color:var(--muted);font-size:15px;font-weight:600}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:820px){.charts{grid-template-columns:1fr}}
+.chartcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.chartcard h3{font-size:13.5px;font-weight:700;margin-bottom:4px}
+.chartcard .hint{font-size:11.5px;color:var(--muted);margin-bottom:10px}
+.chartbox{position:relative;height:260px}
+.ph{height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:13px;border:1px dashed var(--line);border-radius:10px;text-align:center;padding:0 14px}
+.ph .big{font-size:26px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0}
 input[type=text],select{background:var(--card);border:1px solid var(--line);color:var(--txt);padding:10px 12px;border-radius:10px;font-size:13px;outline:none}
-input[type=text]{min-width:260px}
+input[type=text]{min-width:240px}
 .seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .seg button{background:var(--card);color:var(--muted);border:none;padding:10px 16px;font-size:13px;cursor:pointer}
 .seg button.active{background:var(--accent);color:#fff}
@@ -37,8 +48,6 @@ table{width:100%;border-collapse:collapse;font-size:13px;background:var(--card);
 th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
 th{color:var(--muted);font-weight:600;background:#fafbff}
 td.imgcell{width:54px}td.imgcell img{width:42px;height:42px;border-radius:8px;object-fit:cover}
-.salesbox{background:linear-gradient(135deg,#fff,#faf8ff);border:1px dashed var(--accent);border-radius:14px;padding:18px;margin:22px 0;color:var(--muted);font-size:13.5px}
-.salesbox b{color:var(--txt)}
 .hidden{display:none}
 .foot{color:var(--muted);font-size:12px;margin-top:24px;text-align:center}
 </style></head>
@@ -46,18 +55,30 @@ td.imgcell{width:54px}td.imgcell img{width:42px;height:42px;border-radius:8px;ob
 <header>
   <div>
     <h1><span class="logo">G</span> Glunixy — Listing Dashboard</h1>
-    <div class="sub">Sticker 3x3" · Batch Q2 2026 · Nguon: Lark sheet "sp" · Cap nhat: 22/06/2026</div>
+    <div class="sub">Sticker 3x3" · Batch Q2 2026 · Nguon: Lark "sp" + Sellerboard · Cap nhat: 23/06/2026</div>
   </div>
-  <span class="badge">Brand moi · listing tao 20/06/2026</span>
+  <span class="badge" id="sbBadge">Brand moi</span>
 </header>
+
+<h2>Tong quan</h2>
 <div class="kpis">
   <div class="card kpi"><div class="label">Tong listing</div><div class="val" id="kTotal">0</div></div>
   <div class="card kpi"><div class="label">Dong san pham</div><div class="val" id="kFam">0</div></div>
-  <div class="card kpi"><div class="label">Bien the / dong</div><div class="val">3</div></div>
-  <div class="card kpi"><div class="label">Kich thuoc</div><div class="val sm">3 × 3 inch</div></div>
-  <div class="card kpi"><div class="label">Doanh so (Sellerboard)</div><div class="val sm">Chua co</div></div>
+  <div class="card kpi"><div class="label">Units da ban</div><div class="val" id="kUnits"></div></div>
+  <div class="card kpi"><div class="label">Doanh thu</div><div class="val" id="kSales"></div></div>
+  <div class="card kpi"><div class="label">Loi nhuan</div><div class="val" id="kProfit"></div></div>
+  <div class="card kpi"><div class="label">Margin</div><div class="val" id="kMargin"></div></div>
 </div>
-<div class="salesbox">📦 <b>Phan ban hang (Sellerboard):</b> Glunixy la brand moi, listing vua tao 20/06/2026 nen <b>chua co doanh so</b>. Khi co du lieu Sellerboard cho Glunixy, dashboard se bo sung: so luong ban, doanh thu, loi nhuan, ton kho theo tung SKU.</div>
+
+<h2>Bieu do</h2>
+<div class="charts">
+  <div class="chartcard"><h3>So listing theo dong san pham</h3><div class="hint">Du lieu listing hien tai</div><div class="chartbox"><canvas id="cFam"></canvas></div></div>
+  <div class="chartcard"><h3>Units ban theo dong san pham</h3><div class="hint">Tu Sellerboard</div><div id="boxUnits"></div></div>
+  <div class="chartcard"><h3>Doanh thu &amp; loi nhuan theo dong</h3><div class="hint">Tu Sellerboard</div><div id="boxRev"></div></div>
+  <div class="chartcard"><h3>Xu huong theo thang</h3><div class="hint">Tu Sellerboard</div><div id="boxTrend"></div></div>
+</div>
+
+<h2>San pham (<span id="nprod">0</span>)</h2>
 <div class="controls">
   <input type="text" id="search" placeholder="🔍 Tim theo ten / SKU / noi dung...">
   <select id="famSel"><option value="">Tat ca dong (10)</option><option value="Be The Light">Be The Light</option><option value="Faith Over Fear">Faith Over Fear</option><option value="He Is Risen">He Is Risen</option><option value="I Can't But I Know A Guy">I Can't But I Know A Guy</option><option value="In God We Trust">In God We Trust</option><option value="Jesus Is King">Jesus Is King</option><option value="Jesus The Way The Truth The Life">Jesus The Way The Truth The Life</option><option value="John 316">John 316</option><option value="Make Heaven Crowded">Make Heaven Crowded</option><option value="Not Today Satan">Not Today Satan</option></select>
@@ -66,14 +87,70 @@ td.imgcell{width:54px}td.imgcell img{width:42px;height:42px;border-radius:8px;ob
 </div>
 <div id="gallery" class="gallery"></div>
 <div id="tablewrap" class="hidden"></div>
-<div class="foot">Glunixy Listing Dashboard · anh tai truc tiep tu CDN san pham · tao boi Claude</div>
+
+<div class="foot">Glunixy Dashboard · listing tu Lark, doanh so tu Sellerboard · tao boi Claude</div>
 </div>
 <script>
 const DATA=[{"sku": "300001652852", "name": "Be The Light FBA 3x3 Glunixy Q22026", "family": "Be The Light", "title": "3PCS 3x3 inch Be The Light Christian Stickers, Floral Bulb Vinyl Decals, Waterproof Faith Quote Sticker for Laptop, Water Bottle, Tumbler, Journal, Let Your Light Shine Church Gift for Her Teens", "img": "https://cdn-images.canawan.com/catalog-mockup/488695/300001652852_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652849", "name": "Be The Light FBA 2 3x3 Glunixy Q22026", "family": "Be The Light", "title": "3PCS 3x3 inch Be The Light Matthew 5:14 Stickers, Retro Sunshine Christian Vinyl Decals, Waterproof Faith Sticker for Laptop, Water Bottle, Tumbler, Journal, Let Your Light Shine Gift for Her", "img": "https://cdn-images.canawan.com/catalog-mockup/488692/300001652849_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652846", "name": "Be The Light FBA 3 3x3 Glunixy Q22026", "family": "Be The Light", "title": "3PCS 3x3 inch Be The Light Christian Stickers, Vintage Cross Sunset Vinyl Decals, Waterproof Jesus Faith Sticker for Laptop, Water Bottle, Tumbler, Journal, Let Your Light Shine Gift Set for Her", "img": "https://cdn-images.canawan.com/catalog-mockup/488689/300001652846_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652841", "name": "Faith Over Fear FBA 3x3 Glunixy Q22026", "family": "Faith Over Fear", "title": "3PCS 3x3 inch Faith Over Fear Christian Stickers for Water Bottles Laptops Phone Cases Waterproof Vinyl Bible Verse Faith Stickers for Adults, Religious Christian Gifts for Teens Girls and Boys", "img": "https://cdn-images.canawan.com/catalog-mockup/488684/300001652841_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652838", "name": "Faith Over Fear 2 FBA 3x3 Glunixy Q22026", "family": "Faith Over Fear", "title": "3PCS 3x3 inch Faith Over Fear Sticker American Flag Cross, Waterproof Vinyl Religious Decals for Cars Water Bottles Laptops, Patriotic Christian Gifts for Adults Teens Men Women, Prayer Gift Set", "img": "https://cdn-images.canawan.com/catalog-mockup/488681/300001652838_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652835", "name": "Faith Over Fear 3 FBA 3x3 Glunixy Q22026", "family": "Faith Over Fear", "title": "3PCS 3x3 inch Faith Over Fear Stickers Retro Groovy Daisy Cross, Waterproof Vinyl Religious Decals for Water Bottles Laptops Planners, Christian Gifts for Women Teens Girls Kids, Church Gift Set", "img": "https://cdn-images.canawan.com/catalog-mockup/488678/300001652835_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652851", "name": "He Is Risen 1 FBA 3x3 Glunixy Q22026", "family": "He Is Risen", "title": "3PCS 3x3 inch He is Risen Stickers, Rustic Wooden Cross Christian Bible Verse Quote Waterproof Vinyl Decal, Easter Jesus Risen Religious Scripture Gifts for Laptop Water Bottle Kindle Car Mug", "img": "https://cdn-images.canawan.com/catalog-mockup/488694/300001652851_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652848", "name": "He Is Risen 2 FBA 3x3 Glunixy Q22026", "family": "He Is Risen", "title": "3PCS 3x3 inch He is Risen Stickers, True Story Cross Crown Christian Easter Stickers, Inspirational Bible Verse Waterproof Vinyl Decal for Kids Craft, Laptop, Water Bottle, Phone, Car Kids Gift", "img": "https://cdn-images.canawan.com/catalog-mockup/488691/300001652848_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652845", "name": "He Is Risen 3 FBA 3x3 Glunixy Q22026", "family": "He Is Risen", "title": "3PCS 3x3 inch He is Risen Stickers, Pastel Easter Cross Dove Floral Christian Stickers, Jesus Is Risen Waterproof Vinyl Decal Gift for Kids, Kindle, Laptop, Water Bottle, Car, Tumbler Kids Gift", "img": "https://cdn-images.canawan.com/catalog-mockup/488688/300001652845_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652834", "name": "I Can't But I Know A Guy FBA 3x3 Glunixy Q22026", "family": "I Can't But I Know A Guy", "title": "3PCS 3x3 Inch I Can't But I Know A Guy Sticker Set, Funny Christian Cross Vinyl Decals, Jesus Faith Quote Stickers for Cars, Laptop, Water Bottle, Tumbler, Bumper, Church Gifts, Waterproof, UV", "img": "https://cdn-images.canawan.com/catalog-mockup/488677/300001652834_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652831", "name": "I Can't But I Know A Guy 2 FBA 3x3 Glunixy Q22026", "family": "I Can't But I Know A Guy", "title": "3PCS 3x3 Inch I Can't But I Know A Guy Rustic Cross Stickers, Funny Christian Vinyl Decal Pack, Jesus Humor Faith Quote for Cars, Laptop, Water Bottle, Tumbler, Bumper, Church Gifts, Waterproof", "img": "https://cdn-images.canawan.com/catalog-mockup/488674/300001652831_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652828", "name": "I Can't But I Know A Guy 3 FBA 3x3 Glunixy Q22026", "family": "I Can't But I Know A Guy", "title": "3PCS 3x3 Inch I Can't But I Know A Guy Sword Cross Sticker, Christian Jesus Vinyl Decals, Funny Faith Quote Stickers for Cars, Laptop, Water Bottle, Tumbler, Bumper, Church Gifts, Weatherproof", "img": "https://cdn-images.canawan.com/catalog-mockup/488671/300001652828_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652832", "name": "In God We Trust FBA 3x3 Glunixy Q22026", "family": "In God We Trust", "title": "3PCS 3x3 Inch In God We Trust Sticker, Christian Faith Quote Patriotic Eagle Flag Vinyl Decal for Cars Laptop Water Bottle Tumbler Phone Bible Journal, Religious God Car Stickers for Believers", "img": "https://cdn-images.canawan.com/catalog-mockup/488675/300001652832_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652829", "name": "In God We Trust 2 FBA 3x3 Glunixy Q22026", "family": "In God We Trust", "title": "3PCS 3x3 Inch Trust In God Sticker, Rustic Cross American Flag Christian Vinyl Decal for Car Mirror Laptop Water Bottle Tumbler Phone Bible Journal, Faith Gift Religious Stickers for Believers", "img": "https://cdn-images.canawan.com/catalog-mockup/488672/300001652829_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652855", "name": "In God We Trust 3 FBA 3x3 Glunixy Q22026", "family": "In God We Trust", "title": "3PCS 3x3 Inch In God We Trust Flag Sticker, Distressed Patriotic Christian Vinyl Decal for Cars Window Laptop Water Bottle Tumbler Phone Bible Journal, God Family Country Stickers for Believers", "img": "https://cdn-images.canawan.com/catalog-mockup/488698/300001652855_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652842", "name": "Jesus Is King 1 FBA 3x3 Glunixy Q22026", "family": "Jesus Is King", "title": "3PCS 3x3 inch Jesus Is King Sticker, Thorn Crown Christian Faith Vinyl Decal, Christ Is King Car Sticker for Laptop Water Bottle Tumbler Bumper Window, Religious Gift for Men Women Cars Truck", "img": "https://cdn-images.canawan.com/catalog-mockup/488685/300001652842_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652839", "name": "Jesus Is King 2 FBA 3x3 Glunixy Q22026", "family": "Jesus Is King", "title": "3PCS 3x3 inch Jesus Is King Sticker, Bold Yellow Christian Faith Vinyl Decal, Christ Is King Car Sticker for Laptop Water Bottle Tumbler Bumper Window, Religious Gifts for Men Women Cars Trucks", "img": "https://cdn-images.canawan.com/catalog-mockup/488682/300001652839_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652857", "name": "Jesus Is King 3 FBA 3x3 Glunixy Q22026", "family": "Jesus Is King", "title": "3PCS 3x3 inch Jesus Is King Sticker, Grunge Cross Christian Faith Vinyl Decal, Christ Is King Car Sticker for Laptop Water Bottle Tumbler Bumper Window, Religious Gift for Men Women Cars Truck", "img": "https://cdn-images.canawan.com/catalog-mockup/488700/300001652857_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652836", "name": "Jesus The Way The Truth The Life 1 FBA 3x3 Glunixy Q22026", "family": "Jesus The Way The Truth The Life", "title": "3PCS 3x3 Inch Jesus The Way The Truth The Life Sticker, Christian Vinyl Decal Car Sticker, Bible Verse Cross Nail Scripture Stickers for Laptop Water Bottle Tumbler Phone Cup Kindle Notebooks", "img": "https://cdn-images.canawan.com/catalog-mockup/488679/300001652836_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652833", "name": "Jesus The Way The Truth The Life 2 FBA 3x3 Glunixy Q22026", "family": "Jesus The Way The Truth The Life", "title": "3PCS 3x3 Inch Jesus The Way The Truth The Life Sticker, Bold Christian Vinyl Decal Car Window Sticker, Cross Crown of Thorns Bible Verse Stickers for Truck Laptop Water Bottle Tumbler Cup Art", "img": "https://cdn-images.canawan.com/catalog-mockup/488676/300001652833_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652830", "name": "Jesus The Way The Truth The Life 3 FBA 3x3 Glunixy Q22026", "family": "Jesus The Way The Truth The Life", "title": "3PCS 3x3 Inch Jesus The Way The Truth The Life Sticker, Round Christian Vinyl Decal Car Sticker, John 14:6 Bible Verse Cross Stickers for Laptop Water Bottle Tumbler Phone Notebook Cup Kindle", "img": "https://cdn-images.canawan.com/catalog-mockup/488673/300001652830_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652856", "name": "John 316 1 FBA 3x3 Glunixy Q22026", "family": "John 316", "title": "3PCS 3x3 inch John 3:16 Sticker, Christian Bible Verse Vinyl Decal with Sunflower Cross Design, Religious Faith Quote Bumper Sticker for Car Laptop Water Bottle Window Tumbler Gift Home Décor", "img": "https://cdn-images.canawan.com/catalog-mockup/488699/300001652856_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652853", "name": "John 316 2 FBA 3x3 Glunixy Q22026", "family": "John 316", "title": "3PCS 3x3 inch John 3:16 Sticker, Stained Glass Doves Cross Christian Vinyl Decal, Bible Verse Faith Bumper Sticker for Car Window Laptop Water Bottle Tumbler, Religious Gift Decor Accessories", "img": "https://cdn-images.canawan.com/catalog-mockup/488696/300001652853_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652850", "name": "John 316 3 FBA 3x3 Glunixy Q22026", "family": "John 316", "title": "3PCS 3x3 inch John 3:16 Sticker, White Dove Olive Branch Christian Vinyl Decal, Elegant Bible Verse Faith Bumper Sticker for Car Laptop Window Water Bottles Tumbler, Religious Gift Home Décor", "img": "https://cdn-images.canawan.com/catalog-mockup/488693/300001652850_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652843", "name": "Make Heaven Crowded FBA 3x3 Glunixy Q22026", "family": "Make Heaven Crowded", "title": "3PCS 3x3 inch Make Heaven Crowded Sticker Set, Christian Faith Quote Religious Waterproof Vinyl Decals for Laptop Water Bottle Tumbler Car Bumper Window Notebook, Vintage Dove Cross Gift Pack", "img": "https://cdn-images.canawan.com/catalog-mockup/488686/300001652843_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652840", "name": "Make Heaven Crowded 2 FBA 3x3 Glunixy Q22026", "family": "Make Heaven Crowded", "title": "3PCS 3x3 inch Make Heaven Crowded Sticker Set, Groovy Christian Faith Quote Waterproof Vinyl Decals for Laptop Water Bottle Tumbler Car Bumper Window Notebook, Heaven Stickers Gift Decor Pack", "img": "https://cdn-images.canawan.com/catalog-mockup/488683/300001652840_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652837", "name": "Make Heaven Crowded 3 FBA 3x3 Glunixy Q22026", "family": "Make Heaven Crowded", "title": "3PCS 3x3 inch Make Heaven Crowded Sticker Set, Retro Christian Faith Quote Religious Waterproof Vinyl Decals for Laptop Water Bottle Tumbler Car Bumper Window Cup Notebook, Vinyl Gift Decor Set", "img": "https://cdn-images.canawan.com/catalog-mockup/488680/300001652837_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652854", "name": "Not Today Satan 1 FBA 3x3 Glunixy Q22026", "family": "Not Today Satan", "title": "3PCS 3x3 inch Not Today Satan Sticker Set, Ornate Cross Funny Christian Vinyl Decals for Laptop Water Bottle Tumbler Car Bumper Window Notebook Planner, Waterproof Bible Faith Humor Decor Pack", "img": "https://cdn-images.canawan.com/catalog-mockup/488697/300001652854_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652847", "name": "Not Today Satan 2 FBA 3x3 Glunixy Q22026", "family": "Not Today Satan", "title": "3PCS 3x3 inch Not Today Satan Sticker Set, Silver Gothic Cross Christian Humor Waterproof Vinyl Decals for Laptop Water Bottle Tumbler Car Bumper Window Notebook Kindle, Faith Gift Decor Pack", "img": "https://cdn-images.canawan.com/catalog-mockup/488690/300001652847_96a3be3cf272e017046d1b2674a52bd3.jpg"}, {"sku": "300001652844", "name": "Not Today Satan 3 FBA 3x3 Glunixy Q22026", "family": "Not Today Satan", "title": "3PCS 3x3 inch Not Today Satan Sticker Set, Bold Black Brush Script Funny Christian Waterproof Vinyl Decals for Laptop Water Bottle Tumbler Car Bumper Window Notebook Planner, Faith Humor Gift", "img": "https://cdn-images.canawan.com/catalog-mockup/488687/300001652844_96a3be3cf272e017046d1b2674a52bd3.jpg"}];
-let view='gallery', q='', fam='';
+const SB={};   // {kpi:{...}, byProduct:[...], byFamily:[...], monthly:[...]} hoac {}
+const hasSB = SB && SB.kpi && Object.keys(SB.kpi||{}).length>0;
 const $=id=>document.getElementById(id);
+const money=v=>'$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:0});
+const int=v=>Number(v).toLocaleString('en-US');
+const NA='<span class="na">Chua co</span>';
+
+// KPI
 $('kTotal').textContent=DATA.length;
 $('kFam').textContent=new Set(DATA.map(d=>d.family)).size;
+function setKpi(id,val){ $(id).innerHTML = val; }
+if(hasSB){
+  $('sbBadge').textContent='Co doanh so';
+  setKpi('kUnits', int(SB.kpi.units||0));
+  setKpi('kSales', money(SB.kpi.sales||0));
+  setKpi('kProfit', money(SB.kpi.netProfit||0));
+  setKpi('kMargin', (SB.kpi.margin||0)+'%');
+}else{
+  ['kUnits','kSales','kProfit','kMargin'].forEach(i=>$(i).className='val na');
+  ['kUnits','kSales','kProfit','kMargin'].forEach(i=>$(i).textContent='Chua co');
+}
+function placeholder(box){ box.innerHTML='<div class="ph"><div class="big">📊</div><div>Chua co du lieu Sellerboard</div><div style="font-size:11px">Chart se hien khi Glunixy co doanh so</div></div>'; }
+
+// Chart: listings per family (real)
+const fams={}; DATA.forEach(d=>fams[d.family]=(fams[d.family]||0)+1);
+const famLabels=Object.keys(fams), famVals=Object.values(fams);
+new Chart($('cFam'),{type:'bar',
+  data:{labels:famLabels,datasets:[{data:famVals,backgroundColor:'#6d4aff',borderRadius:6}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{font:{size:10},maxRotation:60,minRotation:30}},y:{beginAtZero:true,ticks:{precision:0}}}}});
+
+// Sales charts (need SB)
+if(hasSB && SB.byProduct && SB.byProduct.length){
+  $('boxUnits').innerHTML='<div class="chartbox"><canvas id="cUnits"></canvas></div>';
+  const bp=[...SB.byProduct].sort((a,b)=>b.units-a.units);
+  new Chart($('cUnits'),{type:'bar',data:{labels:bp.map(p=>p.name),datasets:[{data:bp.map(p=>p.units),backgroundColor:'#4f8cff',borderRadius:6}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}});
+}else placeholder($('boxUnits'));
+
+if(hasSB && SB.byFamily && SB.byFamily.length){
+  $('boxRev').innerHTML='<div class="chartbox"><canvas id="cRev"></canvas></div>';
+  new Chart($('cRev'),{type:'bar',data:{labels:SB.byFamily.map(f=>f.family),datasets:[
+    {label:'Doanh thu',data:SB.byFamily.map(f=>f.sales),backgroundColor:'#9b6bff',borderRadius:5},
+    {label:'Loi nhuan',data:SB.byFamily.map(f=>f.profit),backgroundColor:'#16a34a',borderRadius:5}]},
+    options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{font:{size:10},maxRotation:60,minRotation:30}},y:{beginAtZero:true}}}});
+}else placeholder($('boxRev'));
+
+if(hasSB && SB.monthly && SB.monthly.length){
+  $('boxTrend').innerHTML='<div class="chartbox"><canvas id="cTrend"></canvas></div>';
+  new Chart($('cTrend'),{data:{labels:SB.monthly.map(m=>m.m),datasets:[
+    {type:'bar',label:'Units',data:SB.monthly.map(m=>m.units),backgroundColor:'rgba(79,140,255,.7)',yAxisID:'y',borderRadius:4},
+    {type:'line',label:'Doanh thu',data:SB.monthly.map(m=>m.sales),borderColor:'#9b6bff',yAxisID:'y1',tension:.35},
+    {type:'line',label:'Loi nhuan',data:SB.monthly.map(m=>m.profit),borderColor:'#16a34a',yAxisID:'y1',tension:.35}]},
+    options:{responsive:true,maintainAspectRatio:false,scales:{y:{position:'left',beginAtZero:true},y1:{position:'right',grid:{drawOnChartArea:false}}}}});
+}else placeholder($('boxTrend'));
+
+// Product list
+let view='gallery', q='', fam='';
+$('nprod').textContent=DATA.length;
 function filtered(){return DATA.filter(d=>{if(fam&&d.family!==fam)return false;if(q){const t=(d.name+' '+d.sku+' '+d.title+' '+d.family).toLowerCase();if(!t.includes(q))return false;}return true;});}
 function render(){
   const rows=filtered();
