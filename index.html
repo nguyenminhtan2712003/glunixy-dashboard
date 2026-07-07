@@ -188,10 +188,10 @@
       <h2>Chart — xu hướng theo tuần</h2>
       <div class="desc">Biểu đồ P&amp;L theo tuần ISO (W22 → W53). Tuần đang chọn được đánh dấu. Hiện ở mức 0 (chưa có doanh thu); sửa số trong tab Account P&amp;L → biểu đồ tự cập nhật.</div>
       <div class="charts">
-        <div class="chartbox"><h3>Sales &amp; Net profit ($)</h3><div class="cc"><canvas id="chSales" style="box-sizing: border-box; display: block; height: 240px; width: 993px;" width="894" height="215"></canvas></div></div>
-        <div class="chartbox"><h3>Units &amp; Refunds</h3><div class="cc"><canvas id="chUnits" style="box-sizing: border-box; display: block; height: 240px; width: 993px;" width="894" height="215"></canvas></div></div>
-        <div class="chartbox"><h3>Advertising cost &amp; Real ACOS %</h3><div class="cc"><canvas id="chAds" style="box-sizing: border-box; display: block; height: 240px; width: 993px;" width="894" height="215"></canvas></div></div>
-        <div class="chartbox"><h3>Margin % &amp; ROI %</h3><div class="cc"><canvas id="chMargin" style="box-sizing: border-box; display: block; height: 240px; width: 993px;" width="894" height="215"></canvas></div></div>
+        <div class="chartbox"><h3>Sales &amp; Net profit ($)</h3><div class="cc"><canvas id="chSales" style="box-sizing: border-box;" width="300"></canvas></div></div>
+        <div class="chartbox"><h3>Units &amp; Refunds</h3><div class="cc"><canvas id="chUnits" style="box-sizing: border-box;" width="300"></canvas></div></div>
+        <div class="chartbox"><h3>Advertising cost &amp; Real ACOS %</h3><div class="cc"><canvas id="chAds" style="box-sizing: border-box;" width="300"></canvas></div></div>
+        <div class="chartbox"><h3>Margin % &amp; ROI %</h3><div class="cc"><canvas id="chMargin" style="box-sizing: border-box;" width="300"></canvas></div></div>
       </div>
     </div>
   </div>
@@ -220,7 +220,7 @@
         <td><div class="prog"><div class="bar"><i style="width:100%"></i></div><span contenteditable="" data-carry="26_2" data-f="prog" style="min-width:30px">100</span>%</div></td>
         <td><button class="btn ghost sm" data-carrydel="26_2">✕</button></td></tr><tr style="background:rgba(34,211,238,.05)">
         <td contenteditable="" data-carry="26_3" data-f="date">02/07 - 03/07</td>
-        <td style="white-space:normal"><span class="badge" style="background:rgba(34,211,238,.16);color:#22d3ee;border-color:transparent">↩ W26</span> <span contenteditable="" data-carry="26_3" data-f="task">Hoàn chỉnh nội dung sharing thứ 6</span></td>
+        <td style="white-space:normal"><span class="badge" style="background:rgba(34,211,238,.16);color:#22d3ee;border-color:transparent">↩ W26</span> <span contenteditable="" data-carry="26_3" data-f="task">Hoàn chỉnh nội dung sharing thứ 6 và sharing</span></td>
         <td><button class="status s-done" data-carry="26_3">Done</button></td>
         <td><div class="prog"><div class="bar"><i style="width:100%"></i></div><span contenteditable="" data-carry="26_3" data-f="prog" style="min-width:30px">100</span>%</div></td>
         <td><button class="btn ghost sm" data-carrydel="26_3">✕</button></td></tr></tbody>
@@ -236,9 +236,17 @@
           <thead><tr><th style="width:46px">STT</th><th>Work content</th><th style="width:150px">Kết quả</th><th style="width:36px"></th></tr></thead>
           <tbody><tr>
     <td>1</td>
-    <td contenteditable="" data-t="todo" data-i="0" data-f="content" style="white-space:normal"></td>
+    <td contenteditable="" data-t="todo" data-i="0" data-f="content" style="white-space:normal">Hoàn Thành List sản phẩm tìm được</td>
     <td contenteditable="" data-t="todo" data-i="0" data-f="result"></td>
-    <td><button class="btn ghost sm" data-del="todo" data-i="0">✕</button></td></tr></tbody>
+    <td><button class="btn ghost sm" data-del="todo" data-i="0">✕</button></td></tr><tr>
+    <td>2</td>
+    <td contenteditable="" data-t="todo" data-i="1" data-f="content" style="white-space:normal">Setup hình store và Content A+</td>
+    <td contenteditable="" data-t="todo" data-i="1" data-f="result"></td>
+    <td><button class="btn ghost sm" data-del="todo" data-i="1">✕</button></td></tr><tr>
+    <td>3</td>
+    <td contenteditable="" data-t="todo" data-i="2" data-f="content" style="white-space:normal"></td>
+    <td contenteditable="" data-t="todo" data-i="2" data-f="result"></td>
+    <td><button class="btn ghost sm" data-del="todo" data-i="2">✕</button></td></tr></tbody>
         </table>
       </div>
       <div class="rowbtns"><button class="btn sm" id="addTodo">+ Thêm to-do</button></div>
@@ -759,7 +767,7 @@ const SEED_NOTES={ 27:{
   solution:"Theo dõi mốc bay 29/6; chuẩn bị listing + keyword để bật đơn ngay khi hàng live; bench tỷ lệ ra đơn theo batch."
 }};
 
-const BAKED=/*BAKED_START*/{"listings":{"B0H669VDNY":{"title":"3PCS 3x3 Inch Trust in God Sticker, Rustic Cross American Flag Christian Vinyl Decal for Car Mirror Laptop Water Bottle Tumbler Phone Bible Journal, Faith Gift Religious"},"B0H6826RQJ":{"title":"3PCS 3x3 inch Faith Over Fear Sticker American Flag Cross, Waterproof Vinyl Religious Decals for Cars Water Bottles Laptops, Patriotic Christian Gifts for Adults Teens"}},"weeks":{"25":{"tasks":{"working":[{"date":"15/06 - 16/06","task":"Chạy H10 cho keychain","status":"done","prog":100},{"date":"17/06 - 19/06","task":"Listing sticker (30 stickers)","status":"done","prog":100},{"date":"19/06","task":"Tham gia sharing","status":"done","prog":100},{"date":"20/06","task":"Hoàn thành, và chuẩn bị cho sharing","status":"done","prog":100}],"todo":[{"content":"LISTING SẢN PHẨM CÒN LẠI","result":""},{"content":"SHARING","result":""},{"content":"HỖ TRỢ ANH THANH DỰNG CODE","result":""},{"content":"XEM VÀ CONNETC MCP","result":""}]},"issues":"","solution":""},"26":{"tasks":{"working":[{"date":"25/06/","task":"Hoàn thành sharing team","status":"done","prog":100},{"date":"24/06 - 27/06","task":"Hoàn thành file listing","status":"done","prog":100},{"date":"22/06 - 24/06","task":"Hoàn thành việc hỗ trợ Anh Thanh build workflow","status":"done","prog":100},{"date":"27/06","task":"Viết xong bộ OKRs","status":"done","prog":100}],"todo":[{"content":"Hoàn Thành và đẩy file listing lên Glunixy","result":"to do"},{"content":"Check và đánh giá bộ hình cho brand Glunixy","result":"to do"},{"content":"Chạy lại và Đánh giá flow anh Thanh Build","result":"to do"},{"content":"Hoàn chỉnh nội dung sharing thứ 6","result":"to do"}]}},"27":{"tasks":{"working":[],"todo":[{"content":"","result":""}]},"carryOv":{"26_0":{"status":"going","prog":70,"date":"01/07 - 02/07"},"26_3":{"date":"02/07 - 03/07","task":"Hoàn chỉnh nội dung sharing thứ 6","prog":100,"status":"done"},"26_1":{"date":"29/06 - 05/07","prog":100,"status":"done"},"26_2":{"date":"29/06 - 30/06","prog":100,"status":"done"}},"issues":"","solution":""}}}/*BAKED_END*/;
+const BAKED=/*BAKED_START*/{"listings":{"B0H669VDNY":{"title":"3PCS 3x3 Inch Trust in God Sticker, Rustic Cross American Flag Christian Vinyl Decal for Car Mirror Laptop Water Bottle Tumbler Phone Bible Journal, Faith Gift Religious"},"B0H6826RQJ":{"title":"3PCS 3x3 inch Faith Over Fear Sticker American Flag Cross, Waterproof Vinyl Religious Decals for Cars Water Bottles Laptops, Patriotic Christian Gifts for Adults Teens"}},"weeks":{"25":{"tasks":{"working":[{"date":"15/06 - 16/06","task":"Chạy H10 cho keychain","status":"done","prog":100},{"date":"17/06 - 19/06","task":"Listing sticker (30 stickers)","status":"done","prog":100},{"date":"19/06","task":"Tham gia sharing","status":"done","prog":100},{"date":"20/06","task":"Hoàn thành, và chuẩn bị cho sharing","status":"done","prog":100}],"todo":[{"content":"LISTING SẢN PHẨM CÒN LẠI","result":""},{"content":"SHARING","result":""},{"content":"HỖ TRỢ ANH THANH DỰNG CODE","result":""},{"content":"XEM VÀ CONNETC MCP","result":""}]},"issues":"","solution":""},"26":{"tasks":{"working":[{"date":"25/06/","task":"Hoàn thành sharing team","status":"done","prog":100},{"date":"24/06 - 27/06","task":"Hoàn thành file listing","status":"done","prog":100},{"date":"22/06 - 24/06","task":"Hoàn thành việc hỗ trợ Anh Thanh build workflow","status":"done","prog":100},{"date":"27/06","task":"Viết xong bộ OKRs","status":"done","prog":100}],"todo":[{"content":"Hoàn Thành và đẩy file listing lên Glunixy","result":"to do"},{"content":"Check và đánh giá bộ hình cho brand Glunixy","result":"to do"},{"content":"Chạy lại và Đánh giá flow anh Thanh Build","result":"to do"},{"content":"Hoàn chỉnh nội dung sharing thứ 6 và sharing","result":"to do"}]}},"27":{"tasks":{"working":[],"todo":[{"content":"Hoàn Thành List sản phẩm tìm được","result":""},{"content":"Setup hình store và Content A+","result":""},{"content":"","result":""}]},"carryOv":{"26_0":{"status":"going","prog":70,"date":"01/07 - 02/07"},"26_3":{"date":"02/07 - 03/07","task":"Hoàn chỉnh nội dung sharing thứ 6 và sharing","prog":100,"status":"done"},"26_1":{"date":"29/06 - 05/07","prog":100,"status":"done"},"26_2":{"date":"29/06 - 30/06","prog":100,"status":"done"}},"issues":"","solution":""}}}/*BAKED_END*/;
 const LS="glunixy_combined_dash_v2";
 function load(){try{const s=localStorage.getItem(LS);if(s)return JSON.parse(s);}catch(e){}return BAKED?JSON.parse(JSON.stringify(BAKED)):{};}
 let STORE=load();
